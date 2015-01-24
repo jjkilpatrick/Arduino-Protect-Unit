@@ -1,0 +1,26 @@
+{
+  "name": "arduino-nest-webview",
+  "version": "0.0.1",
+  "description": "Arduino Nest Webview",
+  "keywords": "serial, socket.io, node-serialport, parse",
+  "repositry": "git@bitbucket.org:analogfolk-ondemand/ldnananest-arduino-nest.git",
+  "author": {
+    "name": "John Kilpatrick"
+  },
+  "dependencies": {
+    "parse": "^1.3.0",
+    "serialport": "1.4.x",
+    "socket.io": "0.9.x",
+    "express": "3.x"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.3.x"
+  },
+  "devDependencies": {
+    "parse": "^1.3.0",
+    "serialport": "1.4.x",
+    "socket.io": "0.9.x",
+    "express": "3.x"
+  }
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="http://code.highcharts.com/modules/exporting.js"></script>
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.3.1.min.js"></script>
+
+	<script>
+
+		// open a connection server:
+		var socket = io.connect('http://localhost:8081');
+
+	</script>
+
+	</head>
+	<body>
+		<div id="container"></div>
+	</body>
+	<script>
+		var chart; 
+
+		function fetchParseData() {
+	    	
+			console.log('running');
+
+	    	Parse.initialize("kvJX1AbxaIA0s1GAoMFvyY7PXumIZrE0n6fT9dUa", "ZDnB3E5qO3SPQ4aliT7odkK1uzjO8haNWmttTiNG");
+
+			var Data = Parse.Object.extend("Data");
+			var query = new Parse.Query(Data);
+
+			query.descending("createdAt");
+			query.limit(1);
+	        query.find({
+	            success: function (result) {
+	            	var series = chart.series[0],
+	            		shift = series.data.length > 20;
+	            		dateStr = result[0].createdAt,
+						date = new Date(dateStr).getTime(),
+	            		temp = result[0].attributes.temperature;
+
+					  	chart.series[0].addPoint([date, temp], true, shift);
+
+					  	setTimeout(fetchParseData, 2000);
+	            },
+	            error: function (error) {
+	                ("Error: " + error.code + " " + error.message);
+	            }
+	        });
+
+		}
+
+		$(document).ready(function() {
+			chart = new Highcharts.Chart({
+				chart: {
+					renderTo: 'container',
+					defaultSeriesType: 'spline',
+					events: {
+						load: fetchParseData
+					}
+				},
+				title: {
+					text: 'Live Temperature (Unit 1)'
+				},
+				xAxis: {
+	                type: 'datetime',
+	                tickPixelInterval: 150
+	            },
+	            yAxis: {
+	                title: {
+	                    text: 'Temperature'
+	                },
+	                plotLines: [{
+	                    value: 0,
+	                    width: 1,
+	                    color: '#808080'
+	                }]
+	            },
+	            tooltip: {
+	                formatter: function () {
+	                    return '<b>' + this.series.name + '</b><br/>' +
+	                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+	                        Highcharts.numberFormat(this.y, 2);
+	                }
+	            },
+	            legend: {
+	                enabled: false
+	            },
+	            exporting: {
+	                enabled: false
+	            },
+				series: [{
+					name: 'Temperature',
+					data: []
+				}]
+			});		
+		});
+
+	</script>
+</html>
